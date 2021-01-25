@@ -9,10 +9,11 @@
  *
  * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
  *
- * @package 
+ * 
  * 
  *
  */
+
 
 get_header();
 
@@ -26,7 +27,7 @@ if ( have_posts() ) {
 	}
 
 	// Previous/next page navigation.
-	twenty_twenty_one_the_posts_navigation();
+?> <div class="navigation"><p><?php posts_nav_link(); ?></p></div> <?
 
 } else {
 
