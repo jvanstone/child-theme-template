@@ -1,6 +1,6 @@
 <?php
 /**
- * The main template file
+ * The generic template file for a Page to show posts.
  *
  * This is the most generic template file in a WordPress theme
  * and one of the two required files for a theme (the other being style.css).
@@ -17,23 +17,57 @@
 
 get_header();
 
-if ( have_posts() ) {
+?>
+	<main id="main" class="site-main" role="main">
+	<div class="entry-wrapper">
+		<header class="entry-header">
+			<h1 class="entry-title"><?php the_title(); ?></h1>
+		</header><!-- .entry-header -->
+		<div class="entry-content">
+			<?php the_content(); ?>
+		</div><!-- .entry-content -->
+		
+		<?php edit_post_link( __( 'Edit', 'story' ), '<footer class="entry-meta"><span class="edit-link">', '</span></footer>' ); ?>
 
-	// Load posts loop.
-	while ( have_posts() ) {
-		the_post();
+<?php
+	/**
+	 * Setup query to show the ‘’ post type with ‘20’ posts.
+	 * Output the title without an excerpt.
+	 */
 
-		get_template_part( 'template-parts/content/content', get_theme_mod( 'display_excerpt_or_full_post', 'excerpt' ) );
-	}
+	$args = array(  
+		'category_name' => '',
+		'posts_per_page'=> 20,
+		'post_type' => 'post',
+		'post_status' => 'publish', 
+		'orderby' => 'title', 
+		'order' => 'ASC', 
+	);
 
-	// Previous/next page navigation.
-?> <div class="navigation"><p><?php posts_nav_link(); ?></p></div> <?
 
-} else {
+	// the query
+	$the_query = new WP_Query( $args ); ?>
+	
+	<?php if ( $the_query->have_posts() ) : ?>
+	
+		<!-- pagination here -->
+	
+		<!-- the loop -->
+		<?php while ( $the_query->have_posts() ) : $the_query->the_post(); 
+		echo '<h2><a href="'.get_permalink().'">';
+		echo the_title();
+		echo '</a></h2>'; ?>
 
-	// If no content, include the "No posts found" template.
-	get_template_part( 'template-parts/content/content-none' );
-
-}
-
+		<?php endwhile; ?>
+		<!-- end of the loop -->
+	
+		<!-- pagination here -->
+	
+		<?php wp_reset_postdata(); ?>
+	
+	<?php else : ?>
+		<p><?php _e( 'Sorry, no posts matched your criteria.' ); ?></p>
+	<?php endif;  ?>
+	</div><!-- .entry-wrapper -->
+	</main><!-- #main -->
 get_footer();
